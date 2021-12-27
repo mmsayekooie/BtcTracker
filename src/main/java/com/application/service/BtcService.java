@@ -49,16 +49,18 @@ public class BtcService {
             while (zdtHour.isBefore(zdtNextHour)) {
                 BtcInfoResp resp = new BtcInfoResp();
                 resp.setTimestamp(zdtHour.toString());
-                
+                btcList =repository.findAllByDateTimeIsLessThanEqual(zdtHour.toString());
+               double sumAmount=btcList.stream().map(r->r.getAmount()).reduce((a,b)->a+b).get();
+               resp.setAmount(sumAmount);
                 System.out.println(zdtHour.toString());
+                btcInfoResps.add(resp);
                 // Prepare for next loop.
                 zdtHour = zdtHour.plusHours(1);
             }
             // Prepare for next loop.
             zdt = zdt.plusHours(1);
         }
-
-        return null;
+        return btcInfoResps;
     }
 
     public BTCInfo saveBtc(SaveInputJson inputJson) {
@@ -88,37 +90,4 @@ public class BtcService {
         return t;
     }
 
-    public static void createHourfromT(Timestamp t, Timestamp t2) {
-        ZoneId zoneId = ZoneId.of("GMT");
-//        ZonedDateTime now = ZonedDateTime.now(zoneId);
-        ZonedDateTime start = ZonedDateTime.ofInstant(t.toInstant(), zoneId);
-        ZonedDateTime end = ZonedDateTime.ofInstant(t2.toInstant(), zoneId);
-        ZonedDateTime nextDay = start.plusDays(1);
-        ZonedDateTime zdt = start;
-        while (zdt.isBefore(end)) {
-            ZonedDateTime zdtHour = zdt;
-            ZonedDateTime zdtNextHour = zdtHour.plusHours(1);
-            while (zdtHour.isBefore(zdtNextHour)) {
-
-                System.out.println(zdtHour.toString());
-                // Prepare for next loop.
-                zdtHour = zdtHour.plusHours(1);
-            }
-            // Prepare for next loop.
-            zdt = zdt.plusHours(1);
-        }
-    }
-
-    public static void main(String[] args) {
-        StringBuilder sbT1 = new StringBuilder("2011-10-05T10:48:01+00:00".replaceAll("T", " "));
-        int plusPos = sbT1.indexOf("+");
-        sbT1 = sbT1.delete(plusPos, plusPos + 5);
-        Timestamp t1 = Optional.ofNullable(sbT1.toString()) // wrap the String into an Optional
-                .map(Timestamp::valueOf).orElse(null);
-        StringBuilder sbT2 = new StringBuilder("2011-10-05T18:48:02+00:00".replaceAll("T", " "));
-        sbT2 = sbT2.delete(plusPos, plusPos + 5);
-        Timestamp t2 = Optional.ofNullable(sbT2.toString()) // wrap the String into an Optional
-                .map(Timestamp::valueOf).orElse(null);
-        createHourfromT(t1, t2);
-    }
 }

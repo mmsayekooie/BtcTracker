@@ -8,7 +8,6 @@ import com.application.service.BtcService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -22,9 +21,7 @@ public class BtcController {
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<BtcInfoResp> getBtcInfo(@RequestBody GetListInputJson inputJson ) {
-        List<BtcInfoResp> btcInfoResp=new ArrayList<>();
-        btcService.listBtc(inputJson.getT1(),inputJson.getT2());
-        return btcInfoResp;
+        return btcService.listBtc(inputJson.getT1(),inputJson.getT2());
     }
 
     @PostMapping(produces = MediaType.APPLICATION_JSON_VALUE,consumes = MediaType.APPLICATION_JSON_VALUE)

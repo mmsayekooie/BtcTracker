@@ -1,8 +1,12 @@
 package com.application.json;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 public class GetListInputJson {
-    String t1;
-    String t2;
+    @JsonFormat(pattern = "dd/MM/yyyy'T'hh:mm:ssZZZZ")
+    private String t1;
+    @JsonFormat(pattern = "dd/MM/yyyy'T'hh:mm:ssZZZZ")
+    private String t2;
 
     public String getT1() {
         return t1;
